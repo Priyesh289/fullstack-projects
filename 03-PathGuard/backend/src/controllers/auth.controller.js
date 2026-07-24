@@ -8,10 +8,10 @@ export const register = async (req, res) => {
     try {
         const { username, email, password } = req.body;
 
-        if(!username || !email || !password){
+        if (!username || !email || !password) {
             return res.status(400).json({
-                success:false,
-                message:"fill all Details"
+                success: false,
+                message: "fill all Details"
             })
         }
 
@@ -32,19 +32,33 @@ export const register = async (req, res) => {
 
         const bcryptPass = await bcrypt.hash(password, 10);
 
-        const userData = await User.create({
+        const user = await User.create({
             username,
             email,
             password: bcryptPass
-        })
+        });
+
+        const token = generateToken(user._id);
 
         return res.status(201).json({
             success: true,
-            message: "User register successfully"
+            message: "User register successfully",
+            data: {
+                user: {
+                    name: user.username,
+                    email: user.email
+                },
+                token
+
+            }
         })
 
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        return res.json(500).json({
+            success: false,
+            message: error
+        })
     }
 }
 
@@ -63,7 +77,7 @@ export const login = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (!user) {
-            return res.status(401), json({
+            return res.status(401).json({
                 success: false,
                 message: 'User not found'
             })
@@ -92,6 +106,10 @@ export const login = async (req, res) => {
         })
 
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        return res.json(500).json({
+            success: false,
+            message: error
+        })
     }
 }

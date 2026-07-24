@@ -5,6 +5,7 @@ import axios from 'axios'
 import API_URL from '../../services/api'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { useAuth } from '../../context/AuthContext'
 
 
 const Signup = () => {
@@ -13,20 +14,31 @@ const Signup = () => {
     const [username, setUsername] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const { signup, token, setToken,
+        saveToken,
+        setCurrentUser
+    } = useAuth();
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
+        console.log("1. handleSubmit called");
+        if (password.length < 6) {
+            toast.error("Password must be at least 6 characters");
+            return
+        }
+
         try {
+            const data = await signup(username, email, password);
+            toast.success(data.message);
 
-            const data = await axios.post(`${API_URL}/register`, { email, password, username });
-            console.log(data.data)
-            if (data.data.success) {
-                navigate('/login')
-                toast.success(data.data.message)
+            if (data.success) {
+                saveToken(data.data.token);
+                setCurrentUser(data.data.user);
             }
-
+            navigate('/projects');
         } catch (error) {
-            toast.error(error.response?.data.message);
+            console.log(error)
+            toast.error(error.response?.data?.message);
         }
     }
 
