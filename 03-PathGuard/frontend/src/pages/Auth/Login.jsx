@@ -12,8 +12,8 @@ const Login = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
-  const { token, setToken, saveToken } = useAuth();
+
+  const { token, setToken, saveToken, setCurrentUser } = useAuth();
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
@@ -22,11 +22,12 @@ const Login = () => {
       const data = await axios.post(`${API_URL}/login`, { email, password });
       if (data.data.success) {
         saveToken(data.data.token);
+        setCurrentUser(data.data.user)
         navigate('/projects')
       }
     } catch (error) {
       console.log(error)
-      toast.error(error.response?.data.message);
+      toast.error(error.response?.data?.message);
     }
   }
 

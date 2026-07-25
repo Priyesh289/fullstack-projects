@@ -32,10 +32,11 @@ const Signup = () => {
             toast.success(data.message);
 
             if (data.success) {
-                saveToken(data.data.token);
-                setCurrentUser(data.data.user);
+                saveToken(data.token);
+                setCurrentUser(data.user);
             }
             navigate('/projects');
+
         } catch (error) {
             console.log(error)
             toast.error(error.response?.data?.message);

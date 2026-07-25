@@ -5,7 +5,7 @@ export const getProfile = (req, res) => {
     const user = req.user
     return res.status(200).json({
         success: true,
-        data: {
+        user: {
             name: user.username,
             email: user.email
         }

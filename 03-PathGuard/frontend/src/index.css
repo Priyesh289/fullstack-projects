@@ -80,6 +80,19 @@ body{
   gap: 6px;
 }
 
+
+.btn-danger {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.btn-danger:hover {
+  background: rgba(239, 68, 68, 0.3);
+  border-color: rgba(239, 68, 68, 0.5);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+}
+
 .form-label {
   font-size: 0.85rem;
   font-weight: 500;
@@ -321,3 +334,12 @@ body{
   border-color: rgba(6, 182, 212, 0.2);
   box-shadow: inset 3px 0 0 0 var(--accent-cyan);
 }
+
+.sidebar-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border-glass);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+

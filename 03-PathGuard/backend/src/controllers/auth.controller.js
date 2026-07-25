@@ -43,14 +43,12 @@ export const register = async (req, res) => {
         return res.status(201).json({
             success: true,
             message: "User register successfully",
-            data: {
-                user: {
-                    name: user.username,
-                    email: user.email
-                },
-                token
-
+            token,
+            user: {
+                name: user.username,
+                email: user.email
             }
+
         })
 
     } catch (error) {
@@ -86,7 +84,7 @@ export const login = async (req, res) => {
         const comparePass = await bcrypt.compare(password, user.password)
 
         if (!comparePass) {
-            return res.status(401), json({
+            return res.status(401).json({
                 success: false,
                 message: 'Invalid credentials'
             })
@@ -102,7 +100,7 @@ export const login = async (req, res) => {
             user: {
                 name: user.username,
                 email: user.email
-            }
+            },
         })
 
     } catch (error) {

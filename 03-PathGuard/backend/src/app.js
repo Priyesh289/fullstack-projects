@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 app.use('/api/v1', authRouter);
 app.use('/api/v1/profile', profileRouter)
 app.use('/api/v1/projects', projectRouter);
-app.use('/api/notes', noteRoute)
+app.use('/api/v1/notes', noteRoute)
 
 
 

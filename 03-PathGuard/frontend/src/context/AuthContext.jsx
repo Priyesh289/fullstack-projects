@@ -24,15 +24,40 @@ export const AuthProvider = ({ children }) => {
         });
 
         const data = response.data;
-        
+        console.log(data)
         return data;
     }
 
+    const logout = (token) => {
+        localStorage.removeItem('token');
+        setToken('');
+        setCurrentUser(null);
+    }
 
+    const fetchUser = async () => {
+        if (!token) {
+            setCurrentUser(null);
+            return
+        }
+        try {
+            const response = await axios.get(`${API_URL}/profile/`, {
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            })
+            const data = response.data;
+            setCurrentUser(data.user)
+        } catch (error) {
+            console.log(error);
 
+        }
+    }
+    useEffect(() => {
+        fetchUser()
+    }, [token])
     const value = {
         signup, token, setToken, saveToken,
-        currentUser, setCurrentUser
+        currentUser, setCurrentUser, logout
     }
 
     return (
