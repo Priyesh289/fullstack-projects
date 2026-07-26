@@ -8,9 +8,8 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null)
     const [token, setToken] = useState(
-        localStorage.getItem("token") || ""
-    )
-
+        () => localStorage.getItem("token") || ""
+    );
     const saveToken = (newToken) => {
         setToken(newToken);
         localStorage.setItem("token", newToken)
@@ -52,10 +51,13 @@ export const AuthProvider = ({ children }) => {
 
         }
     }
+
     useEffect(() => {
-        fetchUser()
-    }, [token])
+        fetchUser();
+    }, [token]);
+
     const value = {
+        isAuthenticated: !!currentUser,
         signup, token, setToken, saveToken,
         currentUser, setCurrentUser, logout
     }

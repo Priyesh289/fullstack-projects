@@ -93,6 +93,11 @@ body{
   box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
 }
 
+.btn-icon {
+  padding: 8px;
+  border-radius: 8px;
+}
+
 .form-label {
   font-size: 0.85rem;
   font-weight: 500;
@@ -182,6 +187,17 @@ body{
 
 .btn-primary:active {
   transform: translateY(0);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  border: 1px solid var(--border-glass);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .auth-footer {
@@ -343,3 +359,223 @@ body{
   gap: 10px;
 }
 
+.vault-split-layout {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
+.vault-list-panel {
+  width: 360px;
+  border-right: 1px solid var(--border-glass);
+  background: rgba(2, 6, 23, 0.3);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  height: 100%;
+}
+
+.vault-list-header {
+  padding: 24px;
+  border-bottom: 1px solid var(--border-glass);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.vault-list-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.vault-list-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.search-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+
+.search-input {
+  width: 100%;
+  padding-left: 38px !important;
+}
+
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.vault-detail-panel {
+  flex: 1;
+  height: 100%;
+  overflow-y: auto;
+  background: rgba(2, 6, 23, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Empty States */
+.vault-empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  text-align: center;
+  color: var(--text-muted);
+  gap: 16px;
+}
+
+/* Detail Editor Styles */
+.vault-detail-header {
+  padding: 24px 32px;
+  border-bottom: 1px solid var(--border-glass);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.vault-detail-content {
+  padding: 32px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+}
+.editable-title {
+  font-size: 2rem;
+  font-weight: 600;
+  border-color: var(--border-glass);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid transparent;
+  color: var(--text-primary);
+  width: 100%;
+  outline: none;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: var(--transition-smooth);
+}
+
+.editable-title:hover{
+  background: transparent;
+}
+
+.editable-title:focus,
+.editable-title:hover {
+  border-color: var(--accent-cyan);
+}
+
+.editable-desc {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  border-color: var(--border-glass);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid transparent;
+  width: 100%;
+  outline: none;
+  resize: none;
+  padding: 8px;
+  border-radius: 8px;
+  min-height: 80px;
+  transition: var(--transition-smooth);
+  font-family: var(--font-sans);
+}
+
+.editable-desc:focus,
+.editable-desc:hover {
+  border-color: var(--accent-cyan);
+}
+
+/* Task Checklists */
+.task-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+.task-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid var(--border-glass);
+  transition: var(--transition-smooth);
+}
+
+.task-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.task-checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+  flex: 1;
+}
+
+.task-checkbox {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2px solid var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-smooth);
+}
+
+.task-row.completed .task-checkbox {
+  background: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+}
+
+.task-text {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  transition: var(--transition-smooth);
+}
+
+.task-row.completed .task-text {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}

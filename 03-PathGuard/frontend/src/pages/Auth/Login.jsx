@@ -14,7 +14,9 @@ const Login = () => {
   const [password, setPassword] = useState('');
 
   const { token, setToken, saveToken, setCurrentUser } = useAuth();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  const from = location.state?.from?.pathname || '/projects';
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -23,7 +25,7 @@ const Login = () => {
       if (data.data.success) {
         saveToken(data.data.token);
         setCurrentUser(data.data.user)
-        navigate('/projects')
+        navigate(from, { replace: true });
       }
     } catch (error) {
       console.log(error)

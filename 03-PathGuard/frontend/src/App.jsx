@@ -5,9 +5,10 @@ import Login from './pages/Auth/Login'
 import { ToastContainer, toast } from 'react-toastify';
 import Projects from './pages/Project/Projects';
 import Notes from './pages/Notes/Notes';
-import Profile from './pages/User-Profile/Profile';
+import Profile from './pages/Profile/Profile';
 import { Sidebar } from 'lucide-react';
 import ProtectedRoute from './routes/ProtectedRoute';
+import DashboardLayout from './layouts/DashboardLayout';
 
 
 const App = () => {
@@ -17,17 +18,14 @@ const App = () => {
 
       <Routes>
 
-        <Route path="/" element={<Navigate to="/Signup" replace />} />
         <Route path="/Signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
 
-        <Route element={<ProtectedRoute />} >
-          <Route path="/projects" element={<Projects />} />
-          <Route path='/notes' element={<Notes />} />
-          <Route path='/profile' element={<Profile />} />
-        </Route>
-
-
+        <Route path='/*' element={
+          <ProtectedRoute>
+            <DashboardLayout />
+          </ProtectedRoute>
+        } />
 
       </Routes >
     </>

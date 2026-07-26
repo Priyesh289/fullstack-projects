@@ -72,7 +72,7 @@ const Sidebar = () => {
         </NavLink>
 
         <NavLink
-          to='profile'
+          to='/profile'
           className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}>
           <User size={18} />
           <span>Profile</span>
