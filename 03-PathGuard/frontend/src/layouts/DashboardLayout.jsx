@@ -38,6 +38,7 @@ const DashboardLayout = () => {
                                 icon={FolderKanban}
                             />
                         } />
+                        <Route path="new" element={<ProjectDetail />} />
                         <Route path=":projectId" element={<ProjectDetail />} />
                     </Route>
 

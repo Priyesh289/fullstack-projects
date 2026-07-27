@@ -2,6 +2,7 @@ import { createContext, Children, useContext, useState, useEffect } from "react"
 import { useNavigate } from 'react-router-dom'
 import axios from "axios";
 import API_URL from "../services/api";
+
 const AuthContext = createContext();
 
 
@@ -41,7 +42,7 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await axios.get(`${API_URL}/profile/`, {
                 headers: {
-                    authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${token}`
                 }
             })
             const data = response.data;

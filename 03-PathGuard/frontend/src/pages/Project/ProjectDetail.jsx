@@ -1,5 +1,6 @@
 import { Calendar, Plus, ShieldCheck, Trash2Icon, TrashIcon } from 'lucide-react'
 import React, { useState } from 'react'
+import { useProject } from '../../context/ProjectContext';
 
 const ProjectDetail = () => {
   const [status, setStatus] = useState('active');
@@ -15,9 +16,9 @@ const ProjectDetail = () => {
   // New task input state
   const [newTaskText, setNewTaskText] = useState('');
 
-  const [taskList, setTaskList] = useState([
+  const { projectCreate, addTaskToProject } = useProject()
 
-  ])
+  const [taskList, setTaskList] = useState([])
 
   const handleDeleteProject = () => {
 
@@ -34,17 +35,20 @@ const ProjectDetail = () => {
       prevTasks.filter((task) => task.id !== taskId)
     )
   }
-  
+
   const formattedDate = project.createdAt
     ? new Date(project.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
     : 'Unknown date';
 
 
-  const handleAddTask = (e) => {
+  const handleAddTask = async (e) => {
     e.preventDefault();
 
     if (!newTaskText.trim()) return;
+    await addTaskToProject(newTaskText);
+    setNewTaskText('')
 
+    /*
     const newTask = {
       id: Date.now(),
       text: newTaskText,
@@ -52,6 +56,7 @@ const ProjectDetail = () => {
     }
     setTaskList([...taskList, newTask]);
     setNewTaskText('')
+    */
   }
 
   const handleToggleTask = (taskId, status) => {
@@ -60,7 +65,16 @@ const ProjectDetail = () => {
       prevTasks.map((task) => task.id == taskId ? { ...task, completed: !status } : task)
     )
   }
-  console.log(taskList);
+
+  const createProject = async () => {
+    await projectCreate(title, description);
+
+  }
+
+
+  const handleSaveField = (title) => {
+
+  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -149,6 +163,15 @@ const ProjectDetail = () => {
           //onBlur={() => handleSaveField('description', description)}
           placeholder="Description"
         />
+
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <button type="submit" className="btn btn-secondary" style={{ flexShrink: 0 }}
+            onClick={createProject}
+          >
+            <Plus size={18} />
+            <span>Create</span>
+          </button>
+        </div>
 
         <hr style={{ border: 'none', borderBottom: '1px solid var(--border-glass)' }} />
 
