@@ -13,6 +13,7 @@ const Projects = () => {
 
   const handleCreateProject = () => {
     navigate("/projects/new");
+    
   }
 
   // Filter projects by title search
@@ -71,7 +72,8 @@ const Projects = () => {
           ) : (
             filteredProjects.map((p) => {
               const progress = getTaskProgress(p.tasks);
-              const isActive = p.id === projectId;
+              const isActive = p._id === projectId;
+              
               return (
                 <Link
                   key={p._id}

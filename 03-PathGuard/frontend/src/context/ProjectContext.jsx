@@ -10,11 +10,28 @@ const ProjectContext = createContext();
 export const ProjectProvider = ({ children }) => {
 
     const [projects, setProjects] = useState([]);
-    const [projectId, setProjectId] = useState("");
+
+    const [projectId, setProjectId] = useState(null);
     const [loading, setLoading] = useState(true);
     const { token } = useAuth();
 
-    const fetchProjects = async () => {
+    const fetchProjectById = async (projectId) => {
+        try {
+            const response = await axios.get(`${API_URL}/projects/${projectId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            const data = response.data;
+            if (data.success) {
+                return data.data
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const fetchAllProjects = async () => {
         try {
             const response = await axios.get(`${API_URL}/projects/`, {
                 headers: {
@@ -24,7 +41,7 @@ export const ProjectProvider = ({ children }) => {
             const data = response.data;
             if (data.success) {
                 setProjects(data.data);
-                setLoading(false)
+                setLoading(false);
             }
 
         } catch (error) {
@@ -64,7 +81,6 @@ export const ProjectProvider = ({ children }) => {
             const data = response.data;
             if (data.success) {
                 toast.success(data.message);
-                setProjectId(data.project._id);
                 return
             }
         } catch (error) {
@@ -73,10 +89,14 @@ export const ProjectProvider = ({ children }) => {
     }
 
     useEffect(() => {
-        fetchProjects()
+        fetchAllProjects()
     }, [])
 
-    const value = { projectId, projects, projectCreate, addTaskToProject };
+    const value = {
+        projects,
+        projectCreate, addTaskToProject,
+        fetchProjectById, projectId, setProjectId
+    };
 
     return (
         <ProjectContext.Provider value={value}>

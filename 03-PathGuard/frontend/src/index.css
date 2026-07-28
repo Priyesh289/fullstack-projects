@@ -495,6 +495,7 @@ body{
   display: flex;
   flex-direction: column;
 }
+
 .vault-item-card {
   padding: 16px;
   display: flex;
@@ -573,9 +574,8 @@ body{
 
 .editable-title {
   font-size: 2rem;
-  font-weight: 600;
-  border-color: var(--border-glass);
-  background: rgba(255, 255, 255, 0.02);
+  font-weight: 700;
+  background: transparent;
   border: 1px solid transparent;
   color: var(--text-primary);
   width: 100%;
@@ -585,20 +585,20 @@ body{
   transition: var(--transition-smooth);
 }
 
-.editable-title:hover{
-  background: transparent;
+.editable-title:hover,
+.editable-title:focus {
+  border-color: var(--border-glass);
+  background: rgba(255, 255, 255, 0.02);
 }
 
-.editable-title:focus,
-.editable-title:hover {
+.editable-title:focus {
   border-color: var(--accent-cyan);
 }
 
 .editable-desc {
   font-size: 1.05rem;
   color: var(--text-secondary);
-  border-color: var(--border-glass);
-  background: rgba(255, 255, 255, 0.02);
+  background: transparent;
   border: 1px solid transparent;
   width: 100%;
   outline: none;
@@ -610,8 +610,13 @@ body{
   font-family: var(--font-sans);
 }
 
-.editable-desc:focus,
-.editable-desc:hover {
+.editable-desc:hover,
+.editable-desc:focus {
+  border-color: var(--border-glass);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.editable-desc:focus {
   border-color: var(--accent-cyan);
 }
 

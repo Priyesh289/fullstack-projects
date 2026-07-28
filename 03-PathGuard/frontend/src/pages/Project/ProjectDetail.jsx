@@ -1,10 +1,11 @@
 import { Calendar, Plus, ShieldCheck, Trash2Icon, TrashIcon } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useProject } from '../../context/ProjectContext';
+import { useParams } from 'react-router-dom';
 
 const ProjectDetail = () => {
   const [status, setStatus] = useState('active');
-
+  const [hasCreated, setHasCreated] = useState(false);
   // Form input local states (to allow fluent editing before blur-saving)
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -16,9 +17,15 @@ const ProjectDetail = () => {
   // New task input state
   const [newTaskText, setNewTaskText] = useState('');
 
-  const { projectCreate, addTaskToProject } = useProject()
+  const {
+    projectCreate, addTaskToProject,
+    fetchProjectById, setProjectId, projectDataById
+  } = useProject()
 
   const [taskList, setTaskList] = useState([])
+
+  const { projectId } = useParams();
+
 
   const handleDeleteProject = () => {
 
@@ -60,21 +67,39 @@ const ProjectDetail = () => {
   }
 
   const handleToggleTask = (taskId, status) => {
-    const copyList = [...taskList];
+
     setTaskList((prevTasks) =>
       prevTasks.map((task) => task.id == taskId ? { ...task, completed: !status } : task)
     )
   }
 
   const createProject = async () => {
+
     await projectCreate(title, description);
 
   }
 
 
   const handleSaveField = (title) => {
-
+    //
   }
+
+  useEffect(() => {
+    const loadProject = async () => {
+      if (!projectId) {
+        setHasCreated(false)
+        setTitle("");
+        setDescription("");
+        return
+      }
+
+      const project = await fetchProjectById(projectId);
+      setHasCreated(true)
+      setTitle(project.title);
+      setDescription(project.description)
+    }
+    loadProject()
+  }, [projectId])
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -165,12 +190,15 @@ const ProjectDetail = () => {
         />
 
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <button type="submit" className="btn btn-secondary" style={{ flexShrink: 0 }}
-            onClick={createProject}
-          >
-            <Plus size={18} />
-            <span>Create</span>
-          </button>
+
+          {!hasCreated ? (
+            <button type="submit" className="btn btn-secondary" style={{ flexShrink: 0 }}
+              onClick={createProject} disabled={!!projectId}
+            >
+              <Plus size={18} />
+              <span>Create</span>
+            </button>
+          ) : ""}
         </div>
 
         <hr style={{ border: 'none', borderBottom: '1px solid var(--border-glass)' }} />
