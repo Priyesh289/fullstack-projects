@@ -6,7 +6,6 @@ const projectSchema = new mongoose.Schema({
     description: { type: String, required: true },
     status: {
         type: String, required: true,
-        enum: ['active', "hold", 'done'],
         default:'active'
     },
     tasks: [

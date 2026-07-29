@@ -4,7 +4,6 @@ import authMiddleware from "../middleware/auth.middleware.js";
 
 const projectRouter = express.Router();
 
-
 projectRouter.use(authMiddleware)
 
 projectRouter.post('/create-project', projectCreate);

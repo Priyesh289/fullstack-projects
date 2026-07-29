@@ -22,7 +22,7 @@ export const projectCreate = async (req, res) => {
         return res.status(201).json({
             success: true,
             message: "Project created successfully",
-            data: project
+            project
         })
 
     } catch (error) {
@@ -34,6 +34,15 @@ export const taskCreate = async (req, res) => {
     try {
         const { text } = req.body;
         const { projectId } = req.params;
+
+        const project = await Project.findById(projectId);
+
+        if (!project) {
+            return res.status(404).json({
+                success: false,
+                message: "Project not found. Please create or select a project first."
+            });
+        }
 
         const task = await Task.create({
             text,
@@ -63,7 +72,7 @@ export const showProject = async (req, res) => {
         const user = req.user._id;
 
         const project = await Project.findById(projectId)
-            .populate("tasks", "text completed -_id");
+            .populate("tasks", "text completed _id");
 
         if (!project) {
             return res.status(404).json({
@@ -92,7 +101,7 @@ export const showProject = async (req, res) => {
 export const editProject = async (req, res) => {
     try {
         const { projectId } = req.params;
-        const { title, description } = req.body;
+        const { title, description, status } = req.body;
         const user = req.user._id;
 
         const project = await Project.findById(projectId);
@@ -108,6 +117,10 @@ export const editProject = async (req, res) => {
                 success: false,
                 message: "User not authorized"
             });
+        }
+
+        if (status !== undefined) {
+            project.status = status
         }
 
         if (title !== undefined) {
@@ -130,6 +143,7 @@ export const editProject = async (req, res) => {
     }
 }
 
+//Delete Project
 export const deleteProject = async (req, res) => {
     try {
         const { projectId } = req.params;
@@ -150,6 +164,13 @@ export const deleteProject = async (req, res) => {
                 message: "User not authorized"
             });
         }
+
+         // Delete all tasks belonging to this project
+        await Task.deleteMany({
+            project: projectId
+        });
+
+        // Delete the project
         await project.deleteOne();
 
         return res.status(200).json({
@@ -171,7 +192,7 @@ export const showAllProject = async (req, res) => {
 
         const project = await Project.find({
             userId: user
-        });
+        }).sort({ createdAt: -1 }).populate("tasks", "text completed -_id");
 
         if (!project) {
             return res.status(404).json({

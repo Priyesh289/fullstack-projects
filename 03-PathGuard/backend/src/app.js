@@ -5,6 +5,7 @@ import projectRouter from './routes/project.routes.js';
 import noteRoute from './routes/note.routes.js';
 import profileRouter from './routes/user.routes.js';
 import cors from 'cors'
+import taskRouter from './routes/task.routes.js';
 
 const app = express();
 
@@ -19,7 +20,8 @@ app.get('/', (req, res) => {
 app.use('/api/v1', authRouter);
 app.use('/api/v1/profile', profileRouter)
 app.use('/api/v1/projects', projectRouter);
-app.use('/api/v1/notes', noteRoute)
+app.use('/api/v1/notes', noteRoute);
+app.use('/api/v1/task', taskRouter)
 
 
 
