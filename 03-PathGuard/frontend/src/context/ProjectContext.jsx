@@ -4,6 +4,7 @@ import axios from "axios";
 import { useAuth } from "./AuthContext";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ProjectContext = createContext();
 
@@ -11,9 +12,69 @@ export const ProjectProvider = ({ children }) => {
 
     const [projects, setProjects] = useState([]);
 
-    const [projectId, setProjectId] = useState(null);
+    const [projectCreateId, setProjectCreateId] = useState(null);
     const [loading, setLoading] = useState(true);
     const { token } = useAuth();
+    const navigate = useNavigate();
+
+    const changeTaskStatus = async (taskId,projectId) => {
+        try {
+            const response = await axios.patch(`${API_URL}/task/${taskId}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            const data = response.data;
+            if (data.success) {
+                
+                await fetchAllProjects();
+                const updatedData = await fetchProjectById(projectId);
+                return updatedData
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const updateProject = async (projectId, status, title, description) => {
+        try {
+            const response = await axios.patch(`${API_URL}/projects/${projectId}`, { status, title, description }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            const data = response.data;
+            await fetchProjectById(projectId)
+            return (data.data)
+        } catch (error) {
+            console.log(error);
+
+        }
+    }
+
+    const deleteProject = async (projectId) => {
+        try {
+
+            if (!projectId) {
+                navigate('/projects');
+                return
+            }
+            const response = await axios.delete(`${API_URL}/projects/${projectId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            const data = response.data;
+            if (data.success) {
+                toast.success(data.message);
+                await fetchAllProjects()
+                return true
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     const fetchProjectById = async (projectId) => {
         try {
@@ -49,7 +110,7 @@ export const ProjectProvider = ({ children }) => {
         }
     }
 
-    const addTaskToProject = async (text) => {
+    const addTaskToProject = async (projectId, text) => {
         try {
             const response = await axios.post(`${API_URL}/projects/${projectId}/tasks`, { text }, {
                 headers: {
@@ -60,7 +121,7 @@ export const ProjectProvider = ({ children }) => {
             const data = response.data;
             if (data.success) {
                 toast.success(data.message);
-                return
+                return true
             }
 
         } catch (error) {
@@ -80,8 +141,12 @@ export const ProjectProvider = ({ children }) => {
             })
             const data = response.data;
             if (data.success) {
+                await fetchAllProjects();
+
                 toast.success(data.message);
-                return
+                return data.project
+
+
             }
         } catch (error) {
             console.log(error);
@@ -93,9 +158,9 @@ export const ProjectProvider = ({ children }) => {
     }, [])
 
     const value = {
-        projects,
-        projectCreate, addTaskToProject,
-        fetchProjectById, projectId, setProjectId
+        projects, changeTaskStatus,
+        projectCreate, addTaskToProject, fetchAllProjects,
+        fetchProjectById, deleteProject, updateProject
     };
 
     return (

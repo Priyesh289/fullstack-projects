@@ -13,7 +13,7 @@ const Projects = () => {
 
   const handleCreateProject = () => {
     navigate("/projects/new");
-    
+
   }
 
   // Filter projects by title search
@@ -22,6 +22,8 @@ const Projects = () => {
     p.description?.toLowerCase().includes(search.toLowerCase())
   );
 
+
+ 
   const getTaskProgress = (tasks) => {
     if (!tasks) return { total: 0, completed: 0, percent: 0 };
     const taskList = Object.values(tasks);

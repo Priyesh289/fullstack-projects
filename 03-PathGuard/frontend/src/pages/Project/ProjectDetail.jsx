@@ -1,7 +1,7 @@
 import { Calendar, Plus, ShieldCheck, Trash2Icon, TrashIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useProject } from '../../context/ProjectContext';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const ProjectDetail = () => {
   const [status, setStatus] = useState('active');
@@ -18,24 +18,34 @@ const ProjectDetail = () => {
   const [newTaskText, setNewTaskText] = useState('');
 
   const {
-    projectCreate, addTaskToProject,
-    fetchProjectById, setProjectId, projectDataById
+    projectCreate, addTaskToProject, deleteProject,
+    updateProject, fetchProjectById, setProjectId,
+    projectDataById, fetchAllProjects, changeTaskStatus
   } = useProject()
 
   const [taskList, setTaskList] = useState([])
 
   const { projectId } = useParams();
+  const navigate = useNavigate()
 
-
-  const handleDeleteProject = () => {
-
+  //Delete Project
+  const handleDeleteProject = async () => {
+    const project = await deleteProject(projectId);
+    if (project) {
+      navigate('/projects')
+    }
 
   }
 
 
-  const handleStatusChange = (newStatus) => {
-    setStatus(newStatus)
+  const handleStatusChange = async (projectStatus) => {
+    const project = await updateProject(projectId, projectStatus, undefined, undefined);
+    if (project) {
+      setStatus(project.status);
+    }
+    await fetchAllProjects()
   }
+
 
   const handleDeleteTask = (taskId) => {
     setTaskList(prevTasks =>
@@ -52,7 +62,12 @@ const ProjectDetail = () => {
     e.preventDefault();
 
     if (!newTaskText.trim()) return;
-    await addTaskToProject(newTaskText);
+    let taskAdded = await addTaskToProject(projectId, newTaskText);
+    if (taskAdded) {
+      await fetchAllProjects();
+      let recentProject = await fetchProjectById(projectId);
+      setTaskList(recentProject.tasks)
+    }
     setNewTaskText('')
 
     /*
@@ -66,16 +81,20 @@ const ProjectDetail = () => {
     */
   }
 
-  const handleToggleTask = (taskId, status) => {
+  const handleToggleTask = async (taskId, projectId) => {
+    console.log('I am clicking', taskId);
 
-    setTaskList((prevTasks) =>
-      prevTasks.map((task) => task.id == taskId ? { ...task, completed: !status } : task)
-    )
+    let project = await changeTaskStatus(taskId);
+    setTaskList(project.tasks)
+
   }
 
   const createProject = async () => {
 
-    await projectCreate(title, description);
+    const project = await projectCreate(title, description);
+    if (project) {
+      navigate(`/projects/${project._id}`);
+    }
 
   }
 
@@ -96,10 +115,13 @@ const ProjectDetail = () => {
       const project = await fetchProjectById(projectId);
       setHasCreated(true)
       setTitle(project.title);
-      setDescription(project.description)
+      setDescription(project.description);
+      setTaskList(project.tasks);
+      setStatus(project.status)
     }
     loadProject()
   }, [projectId])
+  console.log(taskList)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -234,12 +256,12 @@ const ProjectDetail = () => {
             ) : (
               taskList.map((task) => (
                 <div
-                  key={task.id}
+                  key={task._id}
                   className={`task-row ${task.completed ? 'completed' : ''}`}
                 >
                   <div
                     className="task-checkbox-wrapper"
-                    onClick={() => handleToggleTask(task.id, task.completed)}
+                    onClick={() => handleToggleTask(task._id)}
                   >
                     <div className="task-checkbox">
                       {task.completed && <div style={{ width: '8px', height: '8px', borderRadius: '1px', backgroundColor: '#fff' }}></div>}
