@@ -17,7 +17,7 @@ export const ProjectProvider = ({ children }) => {
     const { token } = useAuth();
     const navigate = useNavigate();
 
-    const changeTaskStatus = async (taskId,projectId) => {
+    const changeTaskStatus = async (taskId) => {
         try {
             const response = await axios.patch(`${API_URL}/task/${taskId}`, {}, {
                 headers: {
@@ -27,9 +27,8 @@ export const ProjectProvider = ({ children }) => {
             const data = response.data;
             if (data.success) {
                 
-                await fetchAllProjects();
-                const updatedData = await fetchProjectById(projectId);
-                return updatedData
+                await fetchAllProjects(); 
+                return data.task
             }
 
         } catch (error) {

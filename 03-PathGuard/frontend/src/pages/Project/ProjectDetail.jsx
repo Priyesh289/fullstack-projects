@@ -81,12 +81,17 @@ const ProjectDetail = () => {
     */
   }
 
-  const handleToggleTask = async (taskId, projectId) => {
+  const handleToggleTask = async (taskId) => {
     console.log('I am clicking', taskId);
 
-    let project = await changeTaskStatus(taskId);
-    setTaskList(project.tasks)
+    let updatedTask = await changeTaskStatus(taskId);
 
+    if (!updatedTask) return
+    setTaskList(prev =>
+      prev.map(task => task._id == updatedTask._id
+        ? updatedTask
+        : task)
+    )
   }
 
   const createProject = async () => {
@@ -270,7 +275,7 @@ const ProjectDetail = () => {
                   </div>
 
                   <button
-                    onClick={() => handleDeleteTask(task.id)}
+                    onClick={() => handleDeleteTask(task._id)}
                     className="btn btn-secondary btn-icon"
                     style={{ padding: '6px', border: 'none', background: 'transparent' }}
                   >
