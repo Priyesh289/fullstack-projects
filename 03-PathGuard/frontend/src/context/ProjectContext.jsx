@@ -11,11 +11,28 @@ const ProjectContext = createContext();
 export const ProjectProvider = ({ children }) => {
 
     const [projects, setProjects] = useState([]);
-
+    const [copyProjectId, setCopyProjectId] = useState(null)
     const [projectCreateId, setProjectCreateId] = useState(null);
     const [loading, setLoading] = useState(true);
     const { token } = useAuth();
     const navigate = useNavigate();
+
+    const deleteTask = async (taskId) => {
+        try {
+            const response = await axios.delete(`${API_URL}/task/${taskId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            const data = response.data;
+            if (data.success) {
+                await fetchAllProjects();
+                return true
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     const changeTaskStatus = async (taskId) => {
         try {
@@ -26,8 +43,8 @@ export const ProjectProvider = ({ children }) => {
             })
             const data = response.data;
             if (data.success) {
-                
-                await fetchAllProjects(); 
+
+                await fetchAllProjects();
                 return data.task
             }
 
@@ -149,6 +166,7 @@ export const ProjectProvider = ({ children }) => {
             }
         } catch (error) {
             console.log(error);
+            toast.error(error.response?.data?.message || "Something went wrong")
         }
     }
 
@@ -157,9 +175,10 @@ export const ProjectProvider = ({ children }) => {
     }, [])
 
     const value = {
-        projects, changeTaskStatus,
+        projects, changeTaskStatus, deleteTask,
         projectCreate, addTaskToProject, fetchAllProjects,
-        fetchProjectById, deleteProject, updateProject
+        fetchProjectById, deleteProject, updateProject,
+        copyProjectId, setCopyProjectId
     };
 
     return (

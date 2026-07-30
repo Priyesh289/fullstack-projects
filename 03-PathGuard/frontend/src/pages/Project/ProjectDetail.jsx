@@ -20,7 +20,8 @@ const ProjectDetail = () => {
   const {
     projectCreate, addTaskToProject, deleteProject,
     updateProject, fetchProjectById, setProjectId,
-    projectDataById, fetchAllProjects, changeTaskStatus
+    projectDataById, fetchAllProjects, changeTaskStatus,
+    deleteTask, copyProjectId, setCopyProjectId
   } = useProject()
 
   const [taskList, setTaskList] = useState([])
@@ -47,10 +48,17 @@ const ProjectDetail = () => {
   }
 
 
-  const handleDeleteTask = (taskId) => {
-    setTaskList(prevTasks =>
-      prevTasks.filter((task) => task.id !== taskId)
-    )
+  const handleDeleteTask = async (taskId) => {
+
+    const taskDelete = await deleteTask(taskId);
+    console.log(taskId);
+    console.log(taskList);
+    if (taskDelete) {
+      setTaskList(prevTasks =>
+        prevTasks.filter((task) => task._id !== taskId)
+      )
+    }
+
   }
 
   const formattedDate = project.createdAt
@@ -69,21 +77,9 @@ const ProjectDetail = () => {
       setTaskList(recentProject.tasks)
     }
     setNewTaskText('')
-
-    /*
-    const newTask = {
-      id: Date.now(),
-      text: newTaskText,
-      completed: false,
-    }
-    setTaskList([...taskList, newTask]);
-    setNewTaskText('')
-    */
   }
 
   const handleToggleTask = async (taskId) => {
-    console.log('I am clicking', taskId);
-
     let updatedTask = await changeTaskStatus(taskId);
 
     if (!updatedTask) return
@@ -95,17 +91,27 @@ const ProjectDetail = () => {
   }
 
   const createProject = async () => {
-
     const project = await projectCreate(title, description);
     if (project) {
       navigate(`/projects/${project._id}`);
     }
-
   }
 
 
-  const handleSaveField = (title) => {
-    //
+  const handleSaveTitle = async (title) => {
+    const project = await updateProject(projectId, undefined, title, undefined);
+    if (project) {
+      setTitle(project.title);
+    }
+    await fetchAllProjects()
+  }
+
+  const handleSaveDescription = async (description) => {
+    const project = await updateProject(projectId, undefined, undefined, description);
+    if (project) {
+      setDescription(project.description);
+    }
+    await fetchAllProjects()
   }
 
   useEffect(() => {
@@ -118,6 +124,7 @@ const ProjectDetail = () => {
       }
 
       const project = await fetchProjectById(projectId);
+      setCopyProjectId(projectId)
       setHasCreated(true)
       setTitle(project.title);
       setDescription(project.description);
@@ -126,7 +133,7 @@ const ProjectDetail = () => {
     }
     loadProject()
   }, [projectId])
-  console.log(taskList)
+
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -197,7 +204,7 @@ const ProjectDetail = () => {
           className="editable-title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          //onBlur={() => handleSaveField('title', title)}
+          onBlur={() => handleSaveTitle(title)}
           placeholder="Project Name"
         />
 
@@ -212,7 +219,7 @@ const ProjectDetail = () => {
           className="editable-desc"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          //onBlur={() => handleSaveField('description', description)}
+          onBlur={() => handleSaveDescription(description)}
           placeholder="Description"
         />
 

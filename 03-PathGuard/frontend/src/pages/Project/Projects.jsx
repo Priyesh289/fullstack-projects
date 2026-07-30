@@ -7,7 +7,7 @@ import { useProject } from '../../context/ProjectContext'
 
 const Projects = () => {
 
-  const { projects, loading, projectId } = useProject();
+  const { projects, loading, copyProjectId } = useProject();
   const [search, setSearch] = useState('');
   const navigate = useNavigate()
 
@@ -23,7 +23,7 @@ const Projects = () => {
   );
 
 
- 
+
   const getTaskProgress = (tasks) => {
     if (!tasks) return { total: 0, completed: 0, percent: 0 };
     const taskList = Object.values(tasks);
@@ -58,7 +58,7 @@ const Projects = () => {
             <input
               type="text"
               className="form-input search-input"
-              placeholder="Search files..."
+              placeholder="Search Projects..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -74,8 +74,8 @@ const Projects = () => {
           ) : (
             filteredProjects.map((p) => {
               const progress = getTaskProgress(p.tasks);
-              const isActive = p._id === projectId;
-              
+              const isActive = p._id === copyProjectId;
+
               return (
                 <Link
                   key={p._id}
