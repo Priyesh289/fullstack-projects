@@ -3,10 +3,14 @@ import { useNavigate } from 'react-router-dom'
 import axios from "axios";
 import API_URL from "../services/api";
 
+
 const AuthContext = createContext();
 
 
 export const AuthProvider = ({ children }) => {
+
+    const [displayName, setDisplayName] = useState('');
+
     const [currentUser, setCurrentUser] = useState(null)
     const [token, setToken] = useState(
         () => localStorage.getItem("token") || ""
@@ -34,6 +38,26 @@ export const AuthProvider = ({ children }) => {
         setCurrentUser(null);
     }
 
+    const editProfileName = async (username) => {
+        try {
+            const response = await axios.patch(`${API_URL}/profile`, { username }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            const data = response.data;
+
+            if (data.success) {
+                setCurrentUser(data.data)
+
+            }
+        } catch (error) {
+            console.log(error);
+
+        }
+    }
+
     const fetchUser = async () => {
         if (!token) {
             setCurrentUser(null);
@@ -46,22 +70,23 @@ export const AuthProvider = ({ children }) => {
                 }
             })
             const data = response.data;
-            setCurrentUser(data.user)
+            setCurrentUser(data.user);
+            setDisplayName(data.user.name)
         } catch (error) {
             console.log(error);
-
         }
     }
 
     useEffect(() => {
         fetchUser();
-        
+
     }, [token]);
 
     const value = {
         isAuthenticated: !!currentUser,
         signup, token, setToken, saveToken,
-        currentUser, setCurrentUser, logout
+        currentUser, setCurrentUser, logout,
+        setDisplayName, displayName, editProfileName
     }
 
     return (

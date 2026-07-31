@@ -14,6 +14,7 @@ export const getProfile = (req, res) => {
 
 export const editProfile = async (req, res) => {
     try {
+        const { username } = req.body;
         const userId = req.user._id;
 
         const user = await User.findById(userId);
@@ -24,8 +25,6 @@ export const editProfile = async (req, res) => {
                 message: 'user not found'
             })
         }
-
-        const { username } = req.body;
 
         if (username !== undefined) {
             user.username = username
