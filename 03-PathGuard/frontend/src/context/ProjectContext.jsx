@@ -17,6 +17,7 @@ export const ProjectProvider = ({ children }) => {
     const { token } = useAuth();
     const navigate = useNavigate();
 
+    //Delete Task
     const deleteTask = async (taskId) => {
         try {
             const response = await axios.delete(`${API_URL}/task/${taskId}`, {
@@ -34,6 +35,7 @@ export const ProjectProvider = ({ children }) => {
         }
     }
 
+    //Toggle task Status
     const changeTaskStatus = async (taskId) => {
         try {
             const response = await axios.patch(`${API_URL}/task/${taskId}`, {}, {
@@ -53,6 +55,7 @@ export const ProjectProvider = ({ children }) => {
         }
     }
 
+    //Update Project
     const updateProject = async (projectId, status, title, description) => {
         try {
             const response = await axios.patch(`${API_URL}/projects/${projectId}`, { status, title, description }, {
@@ -69,6 +72,7 @@ export const ProjectProvider = ({ children }) => {
         }
     }
 
+    //Delete Project
     const deleteProject = async (projectId) => {
         try {
 
@@ -92,6 +96,7 @@ export const ProjectProvider = ({ children }) => {
         }
     }
 
+    //fetch Particular One Project
     const fetchProjectById = async (projectId) => {
         try {
             const response = await axios.get(`${API_URL}/projects/${projectId}`, {
@@ -108,6 +113,8 @@ export const ProjectProvider = ({ children }) => {
         }
     }
 
+
+    //fetch All Project
     const fetchAllProjects = async () => {
         try {
             const response = await axios.get(`${API_URL}/projects/`, {
@@ -126,6 +133,7 @@ export const ProjectProvider = ({ children }) => {
         }
     }
 
+    //Add task into Project
     const addTaskToProject = async (projectId, text) => {
         try {
             const response = await axios.post(`${API_URL}/projects/${projectId}/tasks`, { text }, {
@@ -147,7 +155,7 @@ export const ProjectProvider = ({ children }) => {
         }
     }
 
-
+    //Create Project
     const projectCreate = async (title, description) => {
         try {
             const response = await axios.post(`${API_URL}/projects/create-project`, { title, description }, {
@@ -172,7 +180,7 @@ export const ProjectProvider = ({ children }) => {
 
     useEffect(() => {
         fetchAllProjects()
-    }, [])
+    }, [token])
 
     const value = {
         projects, changeTaskStatus, deleteTask,

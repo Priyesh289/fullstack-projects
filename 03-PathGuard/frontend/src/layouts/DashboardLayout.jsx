@@ -50,7 +50,7 @@ const DashboardLayout = () => {
                                 icon={FolderKanban}
                             />
                         } />
-                        <Route path=":notesId" element={<NotesDetail />} />
+                        <Route path=":noteId" element={<NotesDetail />} />
                     </Route>
 
                     <Route path="profile" element={<Profile />} />

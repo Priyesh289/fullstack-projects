@@ -13,7 +13,6 @@ const Projects = () => {
 
   const handleCreateProject = () => {
     navigate("/projects/new");
-
   }
 
   // Filter projects by title search

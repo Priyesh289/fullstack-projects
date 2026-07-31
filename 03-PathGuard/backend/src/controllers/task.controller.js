@@ -20,7 +20,8 @@ export const changeTaskStatus = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            message: "Task status has changed"
+            message: "Task status has changed",
+            task
         })
 
 

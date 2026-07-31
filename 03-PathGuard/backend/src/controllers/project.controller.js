@@ -26,7 +26,10 @@ export const projectCreate = async (req, res) => {
         })
 
     } catch (error) {
-        console.log(error)
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 }
 
@@ -94,7 +97,10 @@ export const showProject = async (req, res) => {
         });
 
     } catch (error) {
-        console.log(error)
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 }
 
@@ -165,7 +171,7 @@ export const deleteProject = async (req, res) => {
             });
         }
 
-         // Delete all tasks belonging to this project
+        // Delete all tasks belonging to this project
         await Task.deleteMany({
             project: projectId
         });

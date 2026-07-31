@@ -4,6 +4,17 @@ import { useProject } from '../../context/ProjectContext';
 import { useParams, useNavigate } from 'react-router-dom';
 
 const ProjectDetail = () => {
+
+  const { projectId } = useParams();
+  const navigate = useNavigate()
+
+  const {
+    projectCreate, addTaskToProject, deleteProject,
+    updateProject, fetchProjectById,
+    projectDataById, fetchAllProjects, changeTaskStatus,
+    deleteTask, setCopyProjectId
+  } = useProject()
+
   const [status, setStatus] = useState('active');
   const [hasCreated, setHasCreated] = useState(false);
   // Form input local states (to allow fluent editing before blur-saving)
@@ -17,17 +28,8 @@ const ProjectDetail = () => {
   // New task input state
   const [newTaskText, setNewTaskText] = useState('');
 
-  const {
-    projectCreate, addTaskToProject, deleteProject,
-    updateProject, fetchProjectById, setProjectId,
-    projectDataById, fetchAllProjects, changeTaskStatus,
-    deleteTask, copyProjectId, setCopyProjectId
-  } = useProject()
-
-  const [taskList, setTaskList] = useState([])
-
-  const { projectId } = useParams();
-  const navigate = useNavigate()
+  const [taskList, setTaskList] = useState([]);
+  const [createdAt, setCreatedAt] = useState(null)
 
   //Delete Project
   const handleDeleteProject = async () => {
@@ -38,7 +40,7 @@ const ProjectDetail = () => {
 
   }
 
-
+  //Chage Project Status
   const handleStatusChange = async (projectStatus) => {
     const project = await updateProject(projectId, projectStatus, undefined, undefined);
     if (project) {
@@ -47,25 +49,22 @@ const ProjectDetail = () => {
     await fetchAllProjects()
   }
 
-
+  //Delete Task
   const handleDeleteTask = async (taskId) => {
 
     const taskDelete = await deleteTask(taskId);
-    console.log(taskId);
-    console.log(taskList);
     if (taskDelete) {
       setTaskList(prevTasks =>
         prevTasks.filter((task) => task._id !== taskId)
       )
     }
-
   }
 
-  const formattedDate = project.createdAt
-    ? new Date(project.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+  const formattedDate = createdAt
+    ? new Date(createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
     : 'Unknown date';
 
-
+  //create task
   const handleAddTask = async (e) => {
     e.preventDefault();
 
@@ -79,6 +78,7 @@ const ProjectDetail = () => {
     setNewTaskText('')
   }
 
+  //toggle Task
   const handleToggleTask = async (taskId) => {
     let updatedTask = await changeTaskStatus(taskId);
 
@@ -129,7 +129,8 @@ const ProjectDetail = () => {
       setTitle(project.title);
       setDescription(project.description);
       setTaskList(project.tasks);
-      setStatus(project.status)
+      setStatus(project.status);
+      setCreatedAt(project.createdAt)
     }
     loadProject()
   }, [projectId])

@@ -2,30 +2,24 @@ import Note from "../models/notes.model.js";
 
 export const createNotes = async (req, res) => {
     try {
-        const { title, description } = req.body;
         const userId = req.user._id;
 
-        if (!title && !description) {
-            return res.status(400).json({
-                success: false,
-                message: "Please provide both title and description"
-            })
-        }
-
         const note = await Note.create({
-            title,
-            description,
             userId: userId
         })
 
         return res.status(201).json({
             success: true,
             message: "notes created successfully",
-
+            note
         })
 
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 }
 
@@ -55,14 +49,18 @@ export const showNotes = async (req, res) => {
             data: notes
         })
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 }
 
 export const editNotes = async (req, res) => {
     try {
         const { notesId } = req.params;
-        const { title, description } = req.body;
+        const { title, description, color, category } = req.body;
         const userId = req.user._id;
 
         const notes = await Note.findById(notesId);
@@ -89,14 +87,27 @@ export const editNotes = async (req, res) => {
             notes.description = description
         }
 
+        if (color !== undefined) {
+            notes.color = color
+        }
+
+        if (category !== undefined) {
+            notes.category = category
+        }
+
         await notes.save();
 
         return res.status(201).json({
             success: true,
-            message: "notes has updated"
+            message: "notes has updated",
+            notes
         })
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 }
 
@@ -129,7 +140,11 @@ export const deleteNotes = async (req, res) => {
             message: "Note deleted successfully"
         })
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 }
 
@@ -139,7 +154,7 @@ export const showAllNotes = async (req, res) => {
 
         const notes = await Note.find({
             userId: userId
-        })
+        }).sort({ createdAt: -1 })
 
         if (!notes) {
             return res.status(404).json({
@@ -154,6 +169,10 @@ export const showAllNotes = async (req, res) => {
         })
 
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 }

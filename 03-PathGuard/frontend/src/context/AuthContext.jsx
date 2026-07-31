@@ -55,6 +55,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         fetchUser();
+        
     }, [token]);
 
     const value = {
